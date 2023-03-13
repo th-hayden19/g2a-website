@@ -1,19 +1,24 @@
-# police department attribute which points to the police department that serves
-# this munic
+# 1. upon construction, read in relevant data from passed-in Dataframe
 
 #municipality/area
-#Population (all)	
-#Pop (nonWhite)	
-#Area SqMI	
-#Area (acres)	
+#Population (all)
+#Pop (nonWhite)
+#Area SqMI
+#Area (acres)
 
-#Region	
+#Region
 
-#Subregion COG	
-#subsubregion School 
+#Subregion COG
+#subsubregion School
 
 ### Shapefile data
-#District	
-#GlobalID	
-#SHAPE_Leng	
+#District
+#GlobalID
+#SHAPE_Leng
 #SHAPE_Area
+
+
+# 2. create a  variable pointing to a new department object - 
+# pass in 'municipality/area' variable and DataFrame to constructor
+
+# 3. simple get (and optionally set) functions
