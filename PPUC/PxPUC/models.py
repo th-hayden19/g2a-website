@@ -115,54 +115,78 @@ class SearchQuery(models.Model):
         verbose_name_plural = "Search Queries"
 
 
-### in progress
-class Contract(models.Model):
-    var = models.TextField()
+### in progress IGNORING PROVISIONS BECAUSE ITS CURRENTLY INCOMPATIBLE ON SPREADSHEET
+"""
+class Provision(models.Model):
+    number = models.CharField()
+    category = models.CharField()
+    explanation = models.CharField()
+
+
+    class Meta:
+        ordering = ['number']
 
     def __str__(self):
         return self.var
+"""
 
 
 class Contract(models.Model):
-    var = models.TextField()
+    # go through and pick proper types for var
+    department = models.CharField()
+    startYear = models.CharField()
+    endYear = models.CharField()
+    bargAgent = models.CharField()
+    contractLink = models.CharField()
+
+    # provisions = models.ManyToManyField(Provision)
+
+    # class Meta:
+    #    ordering = ['department']
 
     def __str__(self):
         return self.var
 
 
 class Department(models.Model):
+    # go through and pick proper types for var
+    department = models.CharField()
+    wesbiteLink = models.CharField()
+    fullOfficers = models.CharField()
+    partOfficers = models.CharField()
+    bill = models.CharField()
+
     contract = models.OneToOneField(
         Contract,
         on_delete=models.CASCADE,
         primary_key=True,
     )
 
-    var = models.TextField()
-
     def __str__(self):
         return self.var
 
 
 class Municipality(models.Model):
+    # go through and pick proper types for var
+    municipality = models.CharField()
+    department = models.CharField()
+    totPop = models.CharField()
+    nonWhitePop = models.CharField()
+    sqMiArea = models.CharField()
+    acreArea = models.CharField()
+
+    region = models.CharField()
+    COG = models.CharField()
+    school = models.CharField()
+
+    sfGlobalID = models.CharField()
+    sfSHAPEleng = models.CharField()
+    sfSHAPEarea = models.CharField()
+
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
 
-    """
-    municipality = models.()
-    totPop = models.()
-    nonWhitePop = models.()
-    sqMiArea = models.()
-    acreArea = models.()
-
-    region = models.()
-
-    COG = models.()
-    school = models.()
-
-    sfDistrict = models.()
-    sfGlobalID = models.()
-    sfSHAPEleng = models.()
-    sfSHAPEarea = models.()
-    """
+    class Meta:
+        ordering = ["municipality"]
 
     def __str__(self):
         return self.municipality

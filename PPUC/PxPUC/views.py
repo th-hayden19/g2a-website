@@ -28,6 +28,7 @@ import after_response
 import hmac
 import hashlib
 import subprocess
+import pandas as pd
 
 
 def landing(request):
@@ -371,3 +372,14 @@ class LocationStageList(APIView):
             "result": result,
         }
         return Response(stages)
+
+
+### my views
+def Import_Excel_pandas(request):
+    file = open("/PxPUC/static/app/mastersheets/Model master spreadsheet.xlsx")
+    dbframe = pd.read_excel(file)
+    for dbframe in dbframe.itertuples():
+        # OBJECT CREATION #obj = Employee.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
+        #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
+        #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
+        obj.save()
