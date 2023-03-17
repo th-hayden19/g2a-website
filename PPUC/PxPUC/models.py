@@ -116,28 +116,31 @@ class SearchQuery(models.Model):
 
 
 ### in progress IGNORING PROVISIONS BECAUSE ITS CURRENTLY INCOMPATIBLE ON SPREADSHEET
-"""
-class Provision(models.Model):
-    number = models.CharField()
-    category = models.CharField()
-    explanation = models.CharField()
 
+
+class Provision(models.Model):
+    number = models.IntegerField(max_length=3, null=True)
+    category = models.CharField(max_length=50, null=True)
+    explanation = models.CharField(max_length=200, null=True)
+    kwOne = models.CharField(max_length=30, null=True)
+    kwOneEx = models.CharField(max_length=300, null=True)
+    # WHAT DO WE DO ABOUT VARIABLE AMOUNTS OF KEYWORDS DEPENDING ON PROVISION???
 
     class Meta:
-        ordering = ['number']
+        ordering = ["number"]
 
     def __str__(self):
         return self.var
-"""
 
 
 class Contract(models.Model):
     # go through and pick proper types for var
-    department = models.CharField()
-    startYear = models.CharField()
-    endYear = models.CharField()
-    bargAgent = models.CharField()
-    contractLink = models.CharField()
+    department = models.CharField(max_length=50, null=True)
+    startYear = models.CharField(max_length=4, null=True)
+    endYear = models.CharField(max_length=4, null=True)
+    bargAgent = models.CharField(max_length=100, null=True)
+    ogPDFlink
+    text
 
     # provisions = models.ManyToManyField(Provision)
 
