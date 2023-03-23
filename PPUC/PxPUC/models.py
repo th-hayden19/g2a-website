@@ -115,7 +115,18 @@ class SearchQuery(models.Model):
         verbose_name_plural = "Search Queries"
 
 
-### in progress IGNORING PROVISIONS BECAUSE ITS CURRENTLY INCOMPATIBLE ON SPREADSHEET
+### in progress
+
+
+class Keyword(models.Model):
+    keyword = models.CharField(max_length=50, null=True)
+    example = models.CharField(max_length=300, null=True)
+
+    class Meta:
+        ordering = ["keyword"]
+
+    def __str__(self):
+        return self.var
 
 
 class Provision(models.Model):
@@ -124,7 +135,8 @@ class Provision(models.Model):
     explanation = models.CharField(max_length=200, null=True)
     kwOne = models.CharField(max_length=30, null=True)
     kwOneEx = models.CharField(max_length=300, null=True)
-    # WHAT DO WE DO ABOUT VARIABLE AMOUNTS OF KEYWORDS DEPENDING ON PROVISION???
+
+    keywords = models.ManyToManyField(Keyword)
 
     class Meta:
         ordering = ["number"]
@@ -134,30 +146,28 @@ class Provision(models.Model):
 
 
 class Contract(models.Model):
-    # go through and pick proper types for var
     department = models.CharField(max_length=50, null=True)
     startYear = models.CharField(max_length=4, null=True)
     endYear = models.CharField(max_length=4, null=True)
     bargAgent = models.CharField(max_length=100, null=True)
-    ogPDFlink
-    text
+    origPDFlink = models.CharField(max_length=100, null=True)
+    # Two others blank on sheet Mar 23
 
-    # provisions = models.ManyToManyField(Provision)
+    provisions = models.ManyToManyField(Provision)
 
-    # class Meta:
-    #    ordering = ['department']
+    class Meta:
+        ordering = ["department"]
 
     def __str__(self):
         return self.var
 
 
 class Department(models.Model):
-    # go through and pick proper types for var
-    department = models.CharField()
-    wesbiteLink = models.CharField()
-    fullOfficers = models.CharField()
-    partOfficers = models.CharField()
-    bill = models.CharField()
+    department = models.CharField(max_length=50, null=True)
+    wesbiteLink = models.CharField(max_length=100, null=True)
+    fullOfficers2019 = models.IntegerField()
+    partOfficers2019 = models.IntegerField()
+    bill = models.CharField(max_length=4, null=True)
 
     contract = models.OneToOneField(
         Contract,
@@ -170,21 +180,21 @@ class Department(models.Model):
 
 
 class Municipality(models.Model):
-    # go through and pick proper types for var
-    municipality = models.CharField()
-    department = models.CharField()
-    totPop = models.CharField()
-    nonWhitePop = models.CharField()
-    sqMiArea = models.CharField()
-    acreArea = models.CharField()
+    municID = models.CharField(max_length=6, null=True)
+    municipality = models.CharField(max_length=100, null=True)
+    department = models.CharField(max_length=100, null=True)
+    totPop2010 = models.IntegerField()
+    nonWhitePop2010 = models.IntegerField()
+    sqMiArea = models.FloatField()
+    acreArea = models.FloatField()
 
-    region = models.CharField()
-    COG = models.CharField()
-    school = models.CharField()
+    region = models.CharField(max_length=20, null=True)
+    COG = models.CharField(max_length=50, null=True)
+    school = models.CharField(max_length=50, null=True)
 
-    sfGlobalID = models.CharField()
-    sfSHAPEleng = models.CharField()
-    sfSHAPEarea = models.CharField()
+    sfGlobalID = models.CharField(max_length=50, null=True)
+    sfSHAPEleng = models.FloatField()
+    sfSHAPEarea = models.FloatField()
 
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
 

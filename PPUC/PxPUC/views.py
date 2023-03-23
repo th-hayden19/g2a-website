@@ -375,11 +375,24 @@ class LocationStageList(APIView):
 
 
 ### my views
-def Import_Excel_pandas(request):
+def Import_Excel_pandas():
     file = open("/PxPUC/static/app/mastersheets/Model master spreadsheet.xlsx")
     dbframe = pd.read_excel(file)
-    for dbframe in dbframe.itertuples():
-        # OBJECT CREATION #obj = Employee.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
-        #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
-        #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
-        obj.save()
+    # for dbframe in dbframe.itertuples():
+    # OBJECT CREATION
+    # keyw_obj = Keyword.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
+    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
+    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
+    # prov_obj = Provision.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
+    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
+    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
+    # cont_obj = Contract.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
+    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
+    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
+    # dept_obj = Department.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
+    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
+    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
+    # muni_obj = Municipality.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
+    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
+    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
+    # obj.save()
