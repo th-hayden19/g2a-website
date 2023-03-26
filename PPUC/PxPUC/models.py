@@ -163,11 +163,11 @@ class Contract(models.Model):
 
 
 class Department(models.Model):
-    department = models.CharField(max_length=50, null=True)
-    wesbiteLink = models.CharField(max_length=100, null=True)
+    deptName = models.CharField(max_length=50, null=True)
+    webLink = models.CharField(max_length=100, null=True)
     fullOfficers2019 = models.IntegerField()
     partOfficers2019 = models.IntegerField()
-    bill = models.CharField(max_length=4, null=True)
+    hasBill = models.BooleanField()
 
     contract = models.OneToOneField(
         Contract,

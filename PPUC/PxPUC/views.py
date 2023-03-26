@@ -377,22 +377,23 @@ class LocationStageList(APIView):
 ### my views
 def Import_Excel_pandas():
     file = open("/PxPUC/static/app/mastersheets/Model master spreadsheet.xlsx")
-    dbframe = pd.read_excel(file)
-    # for dbframe in dbframe.itertuples():
-    # OBJECT CREATION
-    # keyw_obj = Keyword.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
-    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
-    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
-    # prov_obj = Provision.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
-    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
-    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
-    # cont_obj = Contract.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
-    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
-    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
-    # dept_obj = Department.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
-    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
-    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
-    # muni_obj = Municipality.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
-    #                                lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
-    #                                gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )
-    # obj.save()
+    dataframDict = pd.read_excel(
+        file,
+        sheet_name=["Provisions", "Contracts", "Police departments", "Municipalities"],
+    )
+    for sheet in dataframDict.values():
+        for dbframe in sheet.intertuples(index=False):
+            if sheet == "Police departments":
+                tfval = None
+                if dbframe.police_bill_of_rights == "X":
+                    tfval = True
+                else:
+                    tfval = False
+                dept_obj = Department.objects.create(
+                    deptName=dbframe.Police_Agency_Name,
+                    webLink=dbframe.Police_Department_Website,
+                    fullOfficers2019=dbframe.Full_Time_Police_2019,
+                    partOfficers2019=dbframe.Part_Time_police_2019,
+                    hasBill=tfval,
+                )
+                dept_obj.save()
