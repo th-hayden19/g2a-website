@@ -176,7 +176,7 @@ class Department(models.Model):
     #    )
 
     def __str__(self):
-        return self.var
+        return self.deptName
 
 
 # class Municipality(models.Model):
