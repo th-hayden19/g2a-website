@@ -118,48 +118,46 @@ class SearchQuery(models.Model):
 ### in progress
 
 
-# class Keyword(models.Model):
-#    keyword = models.CharField(max_length=50, null=True)
-#    example = models.CharField(max_length=300, null=True)
+class Keyword(models.Model):
+    keyword = models.CharField(max_length=50, null=True)
+    example = models.CharField(max_length=300, null=True)
 
-#    class Meta:
-#        ordering = ["keyword"]
+    class Meta:
+        ordering = ["keyword"]
 
-#    def __str__(self):
-#        return self.var
-
-
-# class Provision(models.Model):
-#    number = models.IntegerField(max_length=3, null=True)
-#    category = models.CharField(max_length=50, null=True)
-#    explanation = models.CharField(max_length=200, null=True)
-#    kwOne = models.CharField(max_length=30, null=True)
-#    kwOneEx = models.CharField(max_length=300, null=True)
-
-#    keywords = models.ManyToManyField(Keyword)
-
-#    class Meta:
-#        ordering = ["number"]
-
-#    def __str__(self):
-#        return self.var
+    def __str__(self):
+        return self.var
 
 
-# class MasterContract(models.Model):
-#    department = models.CharField(max_length=50, null=True)
-#    startYear = models.CharField(max_length=4, null=True)
-#    endYear = models.CharField(max_length=4, null=True)
-#    bargAgent = models.CharField(max_length=100, null=True)
-#    origPDFlink = models.CharField(max_length=100, null=True)
-# Two others blank on sheet Mar 23
+class Provision(models.Model):
+    number = models.IntegerField(max_length=3, null=True)
+    category = models.CharField(max_length=50, null=True)
+    explanation = models.CharField(max_length=200, null=True)
 
-#    provisions = models.ManyToManyField(Provision)
+    keywords = models.ManyToManyField(Keyword)
 
-#    class Meta:
-#        ordering = ["department"]
+    class Meta:
+        ordering = ["number"]
 
-#    def __str__(self):
-#        return self.var
+    def __str__(self):
+        return self.var
+
+
+class MasterContract(models.Model):
+    department = models.CharField(max_length=50, null=True)
+    startYear = models.CharField(max_length=4, null=True)
+    endYear = models.CharField(max_length=4, null=True)
+    bargAgent = models.CharField(max_length=100, null=True)
+    # blank    origPDFlink = models.CharField(max_length=100, null=True)
+    # two others blank on sheet Mar 23
+
+    provisions = models.ManyToManyField(Provision)
+
+    class Meta:
+        ordering = ["department"]
+
+    def __str__(self):
+        return self.var
 
 
 class Department(models.Model):
@@ -179,27 +177,27 @@ class Department(models.Model):
         return self.deptName
 
 
-# class Municipality(models.Model):
-#    municID = models.CharField(max_length=6, null=True)
-#    municipality = models.CharField(max_length=100, null=True)
-#    department = models.CharField(max_length=100, null=True)
-#    totPop2010 = models.IntegerField()
-#    nonWhitePop2010 = models.IntegerField()
-#    sqMiArea = models.FloatField()
-#    acreArea = models.FloatField()
-#
-##    region = models.CharField(max_length=20, null=True)
-#    COG = models.CharField(max_length=50, null=True)
-#    school = models.CharField(max_length=50, null=True)
-#
-#    sfGlobalID = models.CharField(max_length=50, null=True)
-#    sfSHAPEleng = models.FloatField()
-#    sfSHAPEarea = models.FloatField()
+class Municipality(models.Model):
+    municID = models.CharField(max_length=6, null=True)
+    municipality = models.CharField(max_length=100, null=True)
+    department = models.CharField(max_length=100, null=True)
+    totPop2010 = models.IntegerField()
+    nonWhitePop2010 = models.IntegerField()
+    sqMiArea = models.FloatField()
+    acreArea = models.FloatField()
 
-#    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    region = models.CharField(max_length=20, null=True)
+    COG = models.CharField(max_length=50, null=True)
+    school = models.CharField(max_length=50, null=True)
 
-#    class Meta:
-#        ordering = ["municipality"]
+    sfGlobalID = models.CharField(max_length=50, null=True)
+    sfSHAPEleng = models.FloatField()
+    sfSHAPEarea = models.FloatField()
 
-#    def __str__(self):
-#        return self.municipality
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["municipality"]
+
+    def __str__(self):
+        return self.municipality

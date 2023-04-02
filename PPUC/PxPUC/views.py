@@ -375,25 +375,97 @@ class LocationStageList(APIView):
 
 
 ### my views
-def Import_Excel_pandas():
-    file = open("/PxPUC/static/app/mastersheets/Model master spreadsheet.xlsx")
+def Import_MSheet():
     dataframDict = pd.read_excel(
-        file,
+        "/PxPUC/static/app/mastersheets/Model master spreadsheet.xlsx",
         sheet_name=["Provisions", "Contracts", "Police departments", "Municipalities"],
     )
-    for sheet in dataframDict.values():
-        for dbframe in sheet.intertuples(index=False):
-            if sheet == "Police departments":
-                tfval = None
-                if dbframe.police_bill_of_rights == "X":
-                    tfval = True
-                else:
-                    tfval = False
-                dept_obj = Department.objects.create(
-                    deptName=dbframe.Police_Agency_Name,
-                    webLink=dbframe.Police_Department_Website,
-                    fullOfficers2019=dbframe.Full_Time_Police_2019,
-                    partOfficers2019=dbframe.Part_Time_police_2019,
-                    hasBill=tfval,
-                )
-                dept_obj.save()
+
+    # Provision and Keyword
+    for index, row in dataframDict["Provisions"].iterrows():
+        prov_obj = Provision.objects.create(
+            number=row["Number"],
+            category=row["Category Name"],
+            explanation=row["Explanation"],
+        )
+        prov_obj.save()
+
+        keyw1_obj = Keyword.objects.create(
+            keyword=row["Keyword 1"], example=row["Example of Keyword 1"]
+        )
+        keyw1_obj.save()
+        prov_obj.keywords.add(keyw1_obj)
+
+        if row["Keyword 2"] != None:
+            keyw2_obj = Keyword.objects.create(
+                keyword=row["Keyword 2"], example=row["Example of Keyword 2"]
+            )
+            keyw2_obj.save()
+            prov_obj.keywords.add(keyw2_obj)
+
+        if row["Keyword 2"] != None:
+            keyw3_obj = Keyword.objects.create(
+                keyword=row["Keyword 3"], example=row["Example of Keyword 3"]
+            )
+            keyw3_obj.save()
+            prov_obj.keywords.add(keyw3_obj)
+
+    # Municipality
+    for index, row in dataframDict["Municipalities"].iterrows():
+        muni_obj = Municipality.objects.create(
+            municID=row["MUNI_ID"],
+            municipality=row["Municipality_Served"],
+            department=row["Police_Agency_Name"],
+            totPop2010=row["2010_Census"],
+            nonWhitePop2010=row["2010_Census_Non-White"],
+            sqMiArea=row["SQMI"],
+            acreArea=row["ACRES"],
+            region=row["REGION"],
+            COG=row["COG"],
+            school=row["SCHOOLD"],
+            sfGlobalID=row["GlobalID"],
+            sfSHAPEleng=row["SHAPE_Leng"],
+            sfSHAPEarea=row["SHAPE_Area"],
+        )
+
+    # Department
+    for index, row in dataframDict["Police departments"].iterrows():
+        if row["police_bill_of_rights"] == "X":
+            tfval = True
+        else:
+            tfval = False
+
+        dept_obj = Department.objects.create(
+            deptName=row["Police_Agency_Name"],
+            webLink=row["Police_Department_Website"],
+            fullOfficers2019=row["Full_Time_Police_2019"],
+            partOfficers2019=row["Part_Time_Police_2019"],
+            hasBill=tfval,
+        )
+        dept_obj.save()
+
+        try:
+            parMunic = Municipality.objects.get(department=row["Police_Agency_Name"])
+        except Municipality.DoesNotExist:
+            parMunic = None
+
+        if parMunic != None:
+            parMunic.add(dept_obj)
+
+    # Contract
+    for index, row in dataframDict["Contracts"].iterrows():
+        cont_obj = MasterContract.objects.create(
+            department=row["Police_Agency_Name"],
+            startYear=row["Contract_Start_Year"],
+            endYear=row["Contract_End_Year"],
+            bargAgent=row["Collective_Bargaining_Agency"],
+        )
+        cont_obj.save()
+
+        try:
+            parDept = Department.objects.get(deptName=row["Police_Agency_Name"])
+        except Department.DoesNotExist:
+            parDept = None
+
+        if parDept != None:
+            parDept.add(cont_obj)
