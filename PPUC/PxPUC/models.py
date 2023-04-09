@@ -126,11 +126,11 @@ class Keyword(models.Model):
         ordering = ["keyword"]
 
     def __str__(self):
-        return self.var
+        return self.keyword
 
 
 class Provision(models.Model):
-    number = models.IntegerField(max_length=3, null=True)
+    number = models.IntegerField()
     category = models.CharField(max_length=50, null=True)
     explanation = models.CharField(max_length=200, null=True)
 
@@ -140,7 +140,7 @@ class Provision(models.Model):
         ordering = ["number"]
 
     def __str__(self):
-        return self.var
+        return self.category
 
 
 class MasterContract(models.Model):
@@ -157,21 +157,19 @@ class MasterContract(models.Model):
         ordering = ["department"]
 
     def __str__(self):
-        return self.var
+        return self.department
 
 
 class Department(models.Model):
     deptName = models.CharField(max_length=50, null=True)
     webLink = models.CharField(max_length=100, null=True)
-    fullOfficers2019 = models.IntegerField()
-    partOfficers2019 = models.IntegerField()
+    fullOfficers2019 = models.IntegerField(blank=True, null=True)
+    partOfficers2019 = models.IntegerField(blank=True, null=True)
     hasBill = models.BooleanField()
 
-    #    contract = models.OneToOneField(
-    #        MasterContract,
-    #        on_delete=models.CASCADE,
-    #        primary_key=True,
-    #    )
+    mContractObj = models.ForeignKey(
+        MasterContract, on_delete=models.CASCADE, related_name="dept", null=True
+    )
 
     def __str__(self):
         return self.deptName
@@ -182,9 +180,9 @@ class Municipality(models.Model):
     municipality = models.CharField(max_length=100, null=True)
     department = models.CharField(max_length=100, null=True)
     totPop2010 = models.IntegerField()
-    nonWhitePop2010 = models.IntegerField()
-    sqMiArea = models.FloatField()
-    acreArea = models.FloatField()
+    nonWhitePop2010 = models.IntegerField(blank=True, null=True)
+    sqMiArea = models.FloatField(blank=True, null=True)
+    acreArea = models.FloatField(blank=True, null=True)
 
     region = models.CharField(max_length=20, null=True)
     COG = models.CharField(max_length=50, null=True)
@@ -194,7 +192,9 @@ class Municipality(models.Model):
     sfSHAPEleng = models.FloatField()
     sfSHAPEarea = models.FloatField()
 
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    departmentObj = models.ForeignKey(
+        Department, on_delete=models.CASCADE, related_name="munici", null=True
+    )
 
     class Meta:
         ordering = ["municipality"]

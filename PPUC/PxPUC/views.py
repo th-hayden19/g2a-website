@@ -376,57 +376,113 @@ class LocationStageList(APIView):
 
 ### my views
 def Import_MSheet():
+    ###
+    """for row in Department.objects.all().reverse():
+        row.delete()
+
+    for row in MasterContract.objects.all().reverse():
+        row.delete()
+
+    for row in Municipality.objects.all().reverse():
+        row.delete()
+
+    for row in Provision.objects.all().reverse():
+        row.delete()
+
+    for row in Keyword.objects.all().reverse():
+        row.delete()"""
+
     dataframDict = pd.read_excel(
-        "/PxPUC/static/app/mastersheets/Model master spreadsheet.xlsx",
+        "PxPUC/static/app/mastersheets/Model master spreadsheet.xlsx",
         sheet_name=["Provisions", "Contracts", "Police departments", "Municipalities"],
     )
 
     # Provision and Keyword
     for index, row in dataframDict["Provisions"].iterrows():
-        prov_obj = Provision.objects.create(
+        if Provision.objects.filter(
             number=row["Number"],
-            category=row["Category Name"],
+            category=row["Category_Name"],
             explanation=row["Explanation"],
-        )
-        prov_obj.save()
-
-        keyw1_obj = Keyword.objects.create(
-            keyword=row["Keyword 1"], example=row["Example of Keyword 1"]
-        )
-        keyw1_obj.save()
-        prov_obj.keywords.add(keyw1_obj)
-
-        if row["Keyword 2"] != None:
-            keyw2_obj = Keyword.objects.create(
-                keyword=row["Keyword 2"], example=row["Example of Keyword 2"]
+        ).exists():
+            pass
+        else:
+            prov_obj = Provision.objects.create(
+                number=row["Number"],
+                category=row["Category_Name"],
+                explanation=row["Explanation"],
             )
-            keyw2_obj.save()
-            prov_obj.keywords.add(keyw2_obj)
+            prov_obj.save()
 
-        if row["Keyword 2"] != None:
-            keyw3_obj = Keyword.objects.create(
-                keyword=row["Keyword 3"], example=row["Example of Keyword 3"]
+        if Keyword.objects.filter(
+            keyword=row["Keyword_1"], example=row["Example_of_Keyword_1"]
+        ).exists():
+            pass
+        else:
+            keyw1_obj = Keyword.objects.create(
+                keyword=row["Keyword_1"], example=row["Example_of_Keyword_1"]
             )
-            keyw3_obj.save()
-            prov_obj.keywords.add(keyw3_obj)
+            keyw1_obj.save()
+            prov_obj.keywords.add(keyw1_obj)
+
+        if row["Keyword_2"] != None:
+            if Keyword.objects.filter(
+                keyword=row["Keyword_2"], example=row["Example_of_Keyword_2"]
+            ).exists():
+                pass
+            else:
+                keyw2_obj = Keyword.objects.create(
+                    keyword=row["Keyword_2"], example=row["Example_of_Keyword_2"]
+                )
+                keyw2_obj.save()
+                prov_obj.keywords.add(keyw2_obj)
+
+        if row["Keyword_3"] != None:
+            if Keyword.objects.filter(
+                keyword=row["Keyword_3"], example=row["Example_of_Keyword_3"]
+            ).exists():
+                pass
+            else:
+                keyw3_obj = Keyword.objects.create(
+                    keyword=row["Keyword_3"], example=row["Example_of_Keyword_3"]
+                )
+                keyw3_obj.save()
+                prov_obj.keywords.add(keyw3_obj)
 
     # Municipality
     for index, row in dataframDict["Municipalities"].iterrows():
-        muni_obj = Municipality.objects.create(
+        if Municipality.objects.filter(
             municID=row["MUNI_ID"],
             municipality=row["Municipality_Served"],
-            department=row["Police_Agency_Name"],
+            department=row["Police_Agency_Name_Munic"],
             totPop2010=row["2010_Census"],
-            nonWhitePop2010=row["2010_Census_Non-White"],
-            sqMiArea=row["SQMI"],
-            acreArea=row["ACRES"],
+            # nonWhitePop2010=row["2010_Census_Non-White"],
+            # sqMiArea=row["SQMI"],
+            # acreArea=row["ACRES"],
             region=row["REGION"],
-            COG=row["COG"],
+            # COG=row["COG"],    commented out for Pittsburgh City bug
             school=row["SCHOOLD"],
             sfGlobalID=row["GlobalID"],
             sfSHAPEleng=row["SHAPE_Leng"],
             sfSHAPEarea=row["SHAPE_Area"],
-        )
+        ).exists():
+            continue
+        else:
+            muni_obj = Municipality.objects.create(
+                municID=row["MUNI_ID"],
+                municipality=row["Municipality_Served"],
+                department=row["Police_Agency_Name_Munic"],
+                totPop2010=row["2010_Census"],
+                # nonWhitePop2010=row["2010_Census_Non-White"],
+                sqMiArea=row["SQMI"],
+                acreArea=row["ACRES"],
+                region=row["REGION"],
+                COG=row["COG"],
+                school=row["SCHOOLD"],
+                sfGlobalID=row["GlobalID"],
+                sfSHAPEleng=row["SHAPE_Leng"],
+                sfSHAPEarea=row["SHAPE_Area"],
+            )
+            muni_obj.save()
 
     # Department
     for index, row in dataframDict["Police departments"].iterrows():
@@ -435,37 +491,68 @@ def Import_MSheet():
         else:
             tfval = False
 
-        dept_obj = Department.objects.create(
-            deptName=row["Police_Agency_Name"],
+        if row["Full_Time_Police_2019"] != row["Full_Time_Police_2019"]:
+            ft = None
+        else:
+            ft = row["Full_Time_Police_2019"]
+
+        if row["Part_Time_Police_2019"] != row["Part_Time_Police_2019"]:
+            pt = None
+        else:
+            pt = row["Part_Time_Police_2019"]
+
+        if Department.objects.filter(
+            deptName=row["Police_Agency_Name_Dept"],
             webLink=row["Police_Department_Website"],
-            fullOfficers2019=row["Full_Time_Police_2019"],
-            partOfficers2019=row["Part_Time_Police_2019"],
+            fullOfficers2019=ft,
+            partOfficers2019=pt,
             hasBill=tfval,
-        )
-        dept_obj.save()
+        ).exists():
+            continue
+        else:
+            dept_obj = Department.objects.create(
+                deptName=row["Police_Agency_Name_Dept"],
+                webLink=row["Police_Department_Website"],
+                fullOfficers2019=ft,
+                partOfficers2019=pt,
+                hasBill=tfval,
+            )
+            dept_obj.save()
 
-        try:
-            parMunic = Municipality.objects.get(department=row["Police_Agency_Name"])
-        except Municipality.DoesNotExist:
-            parMunic = None
+            try:
+                parMunic = Municipality.objects.filter(
+                    department=row["Police_Agency_Name_Dept"]
+                )
+            except Municipality.DoesNotExist:
+                parMunic = None
 
-        if parMunic != None:
-            parMunic.add(dept_obj)
+            if parMunic != None:
+                for munic in parMunic:
+                    dept_obj.munici.add(munic)
 
     # Contract
     for index, row in dataframDict["Contracts"].iterrows():
-        cont_obj = MasterContract.objects.create(
+        if MasterContract.objects.filter(
             department=row["Police_Agency_Name"],
             startYear=row["Contract_Start_Year"],
             endYear=row["Contract_End_Year"],
             bargAgent=row["Collective_Bargaining_Agency"],
-        )
-        cont_obj.save()
+        ).exists():
+            continue
+        else:
+            cont_obj = MasterContract.objects.create(
+                department=row["Police_Agency_Name"],
+                startYear=row["Contract_Start_Year"],
+                endYear=row["Contract_End_Year"],
+                bargAgent=row["Collective_Bargaining_Agency"],
+            )
+            cont_obj.save()
 
-        try:
-            parDept = Department.objects.get(deptName=row["Police_Agency_Name"])
-        except Department.DoesNotExist:
-            parDept = None
+            try:
+                parDept = Department.objects.filter(deptName=row["Police_Agency_Name"])
+            except Department.DoesNotExist:
+                parDept = None
 
-        if parDept != None:
-            parDept.add(cont_obj)
+            if parDept != None:
+                for dept in parDept:
+                    cont_obj.dept.add(dept)
